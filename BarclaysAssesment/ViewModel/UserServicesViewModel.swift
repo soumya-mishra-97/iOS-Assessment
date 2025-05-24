@@ -6,13 +6,36 @@
 //
 
 import Foundation
+import Combine
 
 class UserServicesViewModel: ObservableObject {
     
     @Published var users: [User] = []
+    private var cancellables: Set<AnyCancellable> = []
     
     init () {
         fetchUsersFromLocal()
+    }
+    
+    // MARK: - Load from API
+    func fetchUsersFromAPI() {
+        guard let url = URL(string: "https://jsonplaceholder.typicode.com/users") else{
+            return
+        }
+        
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: [User].self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case let .failure(error) = completion {
+                    print("Api Error: \(error)")
+                }
+            },
+                  receiveValue: {[weak self] users in
+                self?.users = users
+            }).store(in: &cancellables)
+        
     }
     
     // MARK: - Load from Local JSON

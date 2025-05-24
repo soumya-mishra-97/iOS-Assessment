@@ -13,10 +13,12 @@ struct UserView: View {
     var body: some View {
         List(viewModel.users) { user in
             VStack(alignment: .leading) {
-                Text(user.name)
-                Text(user.email)
-                Text(user.phone)
-                Text(user.website)
+                Text(user.name).font(.headline)
+                Text(user.email).foregroundColor(.secondary)
+                Text("City: \(user.address.city), Zip: \(user.address.zipcode)")
+                    .font(.subheadline)
+                Text("Company: \(user.company.name)")
+                    .font(.subheadline).italic()
             }
         }
     }

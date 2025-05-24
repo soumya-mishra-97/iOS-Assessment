@@ -5,7 +5,6 @@
 //  Created by Soumya Mishra on 20/05/25.
 //
 
-import Foundation
 
 // MARK: - User Model
 struct User: Decodable, Identifiable {
